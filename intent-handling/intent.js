@@ -12,7 +12,7 @@ const createIntent = async (req, res) => {
         return res.status(400).json({ message: `Intent type and description are required` })
     }
 
-    // Step 1: Fetch the latest active intent for this user
+    //  Fetch the latest active intent for this user
     const checkQuery = `SELECT * FROM intents WHERE user_id = ? AND active = 1 ORDER BY created_at DESC LIMIT 1`
     console.log(`[CREATE INTENT] Fetching latest active intent for user_id: ${user_id}`)
 
@@ -31,13 +31,13 @@ const createIntent = async (req, res) => {
             const diffMinutes = (now - lastCreated) / 60000 // convert ms → minutes
             console.log(`[CREATE INTENT] Time since last intent: ${diffMinutes.toFixed(2)} minutes`)
 
-            // Step 2a: Check for duplicate intent
+            //  Check for duplicate intent
             if (lastIntent.intent_type === intent_type) {
                 console.warn(`[CREATE INTENT] Duplicate intent type detected for user_id: ${user_id}`)
                 return res.status(400).json({ message: `You already have an active intent of this type` })
             }
 
-            // Step 2b: Check for 5-minute cooldown
+            // Check for 5-minute cooldown
             if (diffMinutes < 5) {
                 console.warn(`[CREATE INTENT] Intent created too recently for user_id: ${user_id}. Must wait ${Math.ceil(5 - diffMinutes)} more minute(s)`)
                 return res.status(400).json({ message: `You must wait at least 5 minutes before creating a new intent` })
@@ -46,7 +46,7 @@ const createIntent = async (req, res) => {
             console.log(`[CREATE INTENT] No active intent found for user_id: ${user_id}, proceeding to create new intent`)
         }
 
-        // Step 3: Deactivate any existing active intent
+        //  Deactivate any existing active intent
         const deactivateQuery = `UPDATE intents SET active = 0 WHERE user_id = ? AND active = 1`
         console.log(`[CREATE INTENT] Deactivating any existing active intents for user_id: ${user_id}`)
         db.query(deactivateQuery, [user_id], (err) => {
