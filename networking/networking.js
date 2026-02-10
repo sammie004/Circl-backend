@@ -16,7 +16,17 @@ const sendInvite = async (req, res) => {
         console.warn(`[SEND INVITE] Sender tried to connect with self: ${senderId}`)
         return res.status(400).json({ message: "Cannot send invite to yourself" })
     }
-
+    const getUserQuery = `SELECT id FROM users WHERE id = ?`
+    db.query(getUserQuery, [receiver_id], (err, results) => {
+        if (err) {
+            console.log(`[SEND INVITE] Internal server error ${err}`)
+            return res.status(500).json({message:`Oops! Looks like something went wrong, please try again in a couple of minutes`})
+        }
+        if (results.length == 0) {
+            console.log(`[SEND INVITE] The user you searched for doesn't exist`)
+            return res.status(404).json({message:`The user you searched for doesn't exist`})
+        }
+     })
     // Check if connection already exists (pending or accepted)
     const checkQuery = `
         SELECT * FROM connections 

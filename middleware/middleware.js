@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
         req.user = decoded   // 🔥 THIS IS CRITICAL
         next()
     } catch (err) {
-        return res.status(401).json({ message: "Invalid token" })
+        return res.status(401).json({ message: "Oops! it looks like your token has expired \n Login again to get a new one generated for you" })
     }
 }
 
