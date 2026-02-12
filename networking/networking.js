@@ -3,9 +3,9 @@ const db = require('../connection/connection')
 // Send a connection invite
 const sendInvite = async (req, res) => {
     const senderId = req.user.id
-    const { receiver_id } = req.body
+    const { receiver_id, purpose_of_connection, location } = req.body
 
-    console.log(`[SEND INVITE] sender_id: ${senderId}, receiver_id: ${receiver_id}`)
+    console.log(`[SEND INVITE] sender_id: ${senderId}, receiver_id: ${receiver_id}, purpose:${purpose_of_connection}, location:${location}`)
 
     if (!receiver_id) {
         console.warn(`[SEND INVITE] Missing receiver_id for sender_id: ${senderId}`)
@@ -46,8 +46,8 @@ const sendInvite = async (req, res) => {
         }
 
         // Insert new connection
-        const insertQuery = `INSERT INTO connections (sender_id, receiver_id) VALUES (?, ?)`
-        db.query(insertQuery, [senderId, receiver_id], (err, results) => {
+        const insertQuery = `INSERT INTO connections (sender_id, receiver_id, purpose_of_connection, location) VALUES (?, ?, ?, ?)`
+        db.query(insertQuery, [senderId, receiver_id, purpose_of_connection, location], (err, results) => {
             if (err) {
                 console.error(`[SEND INVITE] Error creating connection:`, err)
                 return res.status(500).json({ message: "Internal server error" })
