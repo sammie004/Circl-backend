@@ -13,12 +13,14 @@ const userAuthRoutes = require('./user-routes/user-auth');
 const profileRoutes = require('./user-routes/profile');
 const IntentRoutes = require('./intent-routes/intent-route');
 const networkingRoutes = require('./networking-routes/net');
+const filterRoute = require('./filter-route/filter-route');
 
 // route usage
 app.use('/api/auth', userAuthRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/intent', IntentRoutes);
 app.use('/api/networking', networkingRoutes);
+app.use('/api/search', filterRoute);
 
 
 // server listening
